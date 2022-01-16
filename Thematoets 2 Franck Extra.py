@@ -79,9 +79,9 @@ class GFF:
         return self.accessiecode
 
 
-def serine_kinase(sequence, regex_ser):
+def serine_regex(sequence, regex_ser):
     """
-    Deze functie gebruikt regex om een serine-kinase in de sequentie te vinden.
+    Deze functie gebruikt regex om serine in de sequentie te vinden.
     Als het matcht, returnt het "True"; zo niet, dan returnt het "False".
 
     :param sequence: sequentie voor de kinase
@@ -95,10 +95,9 @@ def serine_kinase(sequence, regex_ser):
         return False
 
 
-def histamine_kinase(sequence, regex_his):
+def histamine_regex(sequence, regex_his):
     """
-    Deze functie gebruikt regex om een histamine-kinase
-    in de sequentie te vinden.
+    Deze functie gebruikt regex om histamine in de sequentie te vinden.
     Als het matcht, returnt het "True"; zo niet, dan returnt het "False".
 
     :param sequence: sequentie voor de kinase
@@ -112,10 +111,63 @@ def histamine_kinase(sequence, regex_his):
         return False
 
 
+def gff_list(gff, fasta_dict):
+    """
+    Dit maakt een lijst met daarin alle FASTA-items,
+    plus informatie uit de GFF-class:
+    - Exonen
+    - Genlengte
+    - Chromosoom
+    - Accessiecode van het gen
+
+    :param gff: str - GFF file
+    :param fasta_dict: dict - fasta dictionary {header: seq}
+    :return: lijst met GFF-items
+    """
+    gff_entries = []
+    entry = ""
+    # Opent en leest het bestand in
+    try:
+        with open(gff) as inFile:
+            for line in inFile:
+                # Als er "mRNA" in de regel te vinden is
+                if re.search("mRNA", line):
+                    # Als de entry níét leeg is
+                    if entry != "":
+                        entry.set_exonen(exonen)
+                        if entry.get_accessiecode() in fasta_dict.keys():
+                            gff_entries.append(entry)
+                            exonen = 0
+
+                        # Dit maakt een nieuwe entry aan
+                        entry = GFF()
+                        entry.set_chromosoom(line.split()[0].split("Chr")[1])
+                        entry.set_lengtegen(line.split()[3], line.split()[4])
+                        entry.set_accessiecode(line.split()[8].split(";")[0] \
+                                               .split("=")[1])
+
+                        # Dit haalt het chromosoom, start-stop en
+                        # de accessiecode uit de regel
+                        entry.set_chromosoom(line.split()[0].split("Chr")[1])
+                        entry.set_lengtegen(line.split()[3], line.split()[4])
+                        entry.set_accessiecode(line.split()[8].split(";")[0] \
+                                               .split("=")[1])
+
+                # Telt +1 met het aantal exonen dat wordt gevonden
+                elif re.search("exon", line).lower():
+                    exonen += 1
+
+    except FileNotFoundError:  # Als het bestand niet in dezelfde map staat
+        print("De gevraagde file is niet aanwezig:", "GCF_000013425.1_ASM1342v1_genomic.gff")
+        gff = input("Geef een nieuw bestand: ")
+        gff_list(gff, fasta_dict)
+
+        return gff_entries
+
+
 if __name__ == "__main__":
     # De verschillende variabelen
     regex_ser = "T-x(2)-[GC]-[NQ]-S-G-S-x-[LIVM]-[FY]"  # Serine regex
     regex_his = "[ST]-G-[LIVMFYW](3)-[GN]-x(2)-T-[LIVM]-x-T-x(2)-H"  # Histamine regex
-    gff_file = "GCF_000013425.1_ASM1342v1_genomic.gff"
+    gff = "GCF_000013425.1_ASM1342v1_genomic.gff"
     gbff_file = "GCF_000013425.1_ASM1342v1_genomic.gbff"
-
