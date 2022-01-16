@@ -6,9 +6,10 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 
 
-class GFF3:
+class GFF:
     """
-    Deze class definieert de functies voor het inlezen van de GFF3 file.
+    Deze class definieert de functies voor het inlezen van
+    en zoeken in de GFF file.
 
     Dit zijn onder andere:
     - Het aantal exonen
@@ -24,11 +25,11 @@ class GFF3:
         self.chromosoom = 0
         self.accessiecode = 0
 
-    def set_exonen(self, ex):
+    def set_exonen(self, exon):
         """
         Dit bepaalt het aantal exonen voor het gen.
         """
-        self.aantal_exonen = ex
+        self.aantal_exonen = exon
 
     def get_exonen(self):
         """
@@ -65,21 +66,56 @@ class GFF3:
         """
         return self.chromosoom
 
-    def set_accessiecode(self, accessiecode):
+    def set_accessiecode(self, code):
         """
         Dit bepaalt en zoekt naar de accessiecode van het opgegeven gen.
         """
-        self.accessiecode = accessiecode
+        self.accessiecode = code
 
     def get_accessiecode(self):
         """
-        Dit returnt de accessiecode van het opgegeven gen
+        Dit returnt de accessiecode van het opgegeven gen.
         """
         return self.accessiecode
+
+
+def serine_kinase(sequence, regex_ser):
+    """
+    Deze functie gebruikt regex om een serine-kinase in de sequentie te vinden.
+    Als het matcht, returnt het "True"; zo niet, dan returnt het "False".
+
+    :param sequence: sequentie voor de kinase
+    :param regex_ser: regex voor serine
+    :return: True/False
+    """
+    match = re.search(regex_ser, sequence)
+    if match:
+        return True
+    else:
+        return False
+
+
+def histamine_kinase(sequence, regex_his):
+    """
+    Deze functie gebruikt regex om een histamine-kinase
+    in de sequentie te vinden.
+    Als het matcht, returnt het "True"; zo niet, dan returnt het "False".
+
+    :param sequence: sequentie voor de kinase
+    :param regex_his: regex voor serine
+    :return: True/False
+    """
+    match = re.search(regex_his, sequence)
+    if match:
+        return True
+    else:
+        return False
 
 
 if __name__ == "__main__":
     # De verschillende variabelen
     regex_ser = "T-x(2)-[GC]-[NQ]-S-G-S-x-[LIVM]-[FY]"  # Serine regex
     regex_his = "[ST]-G-[LIVMFYW](3)-[GN]-x(2)-T-[LIVM]-x-T-x(2)-H"  # Histamine regex
-    gff3 = "GCF_000013425.1_ASM1342v1_genomic.gff"
+    gff_file = "GCF_000013425.1_ASM1342v1_genomic.gff"
+    gbff_file = "GCF_000013425.1_ASM1342v1_genomic.gbff"
+
