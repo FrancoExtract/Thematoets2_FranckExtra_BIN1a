@@ -201,8 +201,11 @@ def output_without_gui(gff_list):
 
 
 if __name__ == "__main__":
-    # De verschillende variabelen
-    regex_ser = "T-x(2)-[GC]-[NQ]-S-G-S-x-[LIVM]-[FY]"  # Serine regex
-    regex_his = "[ST]-G-[LIVMFYW](3)-[GN]-x(2)-T-[LIVM]-x-T-x(2)-H"  # Histamine regex
+    # Serine regex
+    regex_ser = "T-x(2)-[GC]-[NQ]-S-G-S-x-[LIVM]-[FY]"
+    # Histamine regex
+    regex_his = "[ST]-G-[LIVMFYW](3)-[GN]-x(2)-T-[LIVM]-x-T-x(2)-H"
+    # GFF file
     gff = "GCF_000013425.1_ASM1342v1_genomic.gff"
+    # Complementaire GBFF file
     gbff_file = "GCF_000013425.1_ASM1342v1_genomic.gbff"
