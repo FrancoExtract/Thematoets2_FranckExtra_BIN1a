@@ -204,12 +204,32 @@ def output_without_gui(gff_list):
 
 if __name__ == "__main__":
     # Serine regex
-    regex_ser = "T-x(2)-[GC]-[NQ]-S-G-S-x-[LIVM]-[FY]"
+    try:
+        regex_ser = "T-x(2)-[GC]-[NQ]-S-G-S-x-[LIVM]-[FY]"
+    except IndexError:  # Als het gevraagde niet overeenkomt met de index
+        print("Het nummer is niet te vinden in de index.")
+        input("Probeer het opnieuw:")
     # Histamine regex
-    regex_his = "[ST]-G-[LIVMFYW](3)-[GN]-x(2)-T-[LIVM]-x-T-x(2)-H"
+    try:
+        regex_his = "[ST]-G-[LIVMFYW](3)-[GN]-x(2)-T-[LIVM]-x-T-x(2)-H"
+    except IndexError:
+        print("Het nummer is niet te vinden in de index.")
+        input("Probeer het opnieuw:")
     # GFF file
-    gff = "GCF_000013425.1_ASM1342v1_genomic.gff"
+    try:
+        gff = "GCF_000013425.1_ASM1342v1_genomic.gff"
+    except FileNotFoundError:  # Als het bestand niet in dezelfde map staat
+        print("De gevraagde file is niet aanwezig:", bestandnaam)
+        print("Zet het bestand in dezelfde map en probeer het opnieuw.")
+    except IOError:  # Als het bestand niet in te lezen is
+        print("De gevraagde file is niet leesbaar:", gff)
     # Complementaire GBFF file
-    gbff_file = "GCF_000013425.1_ASM1342v1_genomic.gbff"
+    try:
+        gbff_file = "GCF_000013425.1_ASM1342v1_genomic.gbff"
+    except FileNotFoundError:
+        print("De gevraagde file is niet aanwezig:", bestandnaam)
+        print("Zet het bestand in dezelfde map en probeer het opnieuw.")
+    except IOError:
+        print("De gevraagde file is niet leesbaar:", gff)
     # Output zonder GUI
     output_without_gui(gff)
