@@ -187,17 +187,17 @@ def output_without_gui(gff_list):
         code = input("Voer één van de bovenstaande accessiecodes in: ")
         for i in gff_list:
             if code == i.get_accessiecode():
-                # Hiermee worden evengoed alle gevraagde
+                # Hiermee worden evengoed alle gevraagde items geprint
                 print("Aantal exonen: ", i.get_exonen())
                 print("Lengte gen: ", i.get_lengtegen())
                 print("Chromosoom: ", i.get_chromosoom())
 
-        vraag = input("Wilt u nog doorgaan? ")
-        if vraag == "Ja" or vraag == "ja":
+        # Voor als er nog verder moet worden gezocht binnen de file
+        vraag = input("Wilt u doorgaan met zoeken? ")
+        if vraag == "Ja".lower():
             verderzoeken = True
         else:
             verderzoeken = False
-
 
 
 if __name__ == "__main__":
