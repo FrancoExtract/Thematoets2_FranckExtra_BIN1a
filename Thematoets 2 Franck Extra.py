@@ -177,11 +177,11 @@ def output_without_gui(gff_list):
     :return: *none*
     """
 
-    # print iedere accessiecode
+    # Iedere te vinden accessiecode wordt geprint
     for i in gff_list:
         print(i.get_accessiecode())
 
-    # als doorgaan gelijk is aan True, blijft deze loop doorgaan
+    # De while-loop gaat door als "verderzoeken" op True staat
     verderzoeken = True
     while verderzoeken:
         code = input("Voer één van de bovenstaande accessiecodes in: ")
