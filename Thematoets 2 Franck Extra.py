@@ -211,5 +211,5 @@ if __name__ == "__main__":
     gff = "GCF_000013425.1_ASM1342v1_genomic.gff"
     # Complementaire GBFF file
     gbff_file = "GCF_000013425.1_ASM1342v1_genomic.gbff"
-
-    output_without_gui(gff_list)
+    # Output zonder GUI
+    output_without_gui(gff)
