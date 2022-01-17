@@ -3,6 +3,7 @@
 
 import regex as re
 import matplotlib.pyplot as plt
+import tkinter as tk
 
 
 class GFF:
@@ -87,6 +88,7 @@ def serine_regex(sequence, regex_ser):
     :param regex_ser: regex voor serine
     :return: True/False
     """
+    # Zoekt naar een regex-match in de sequentie voor serine
     match = re.search(regex_ser, sequence)
     if match:
         return True
@@ -103,6 +105,7 @@ def histamine_regex(sequence, regex_his):
     :param regex_his: regex voor serine
     :return: True/False
     """
+    # Zoekt naar een regex-match in de sequentie voor histamine
     match = re.search(regex_his, sequence)
     if match:
         return True
@@ -123,8 +126,8 @@ def gff_list(gff, fasta_dict):
     :param fasta_dict: dict - fasta dictionary {header: seq}
     :return: lijst met GFF-items
     """
-    gff_entries = []
-    entry = ""
+    gff_entries = []  # Lijst voor de mRNA-vondsten
+    entry = ""  # De default entry is leeg
     # Opent en leest het bestand in
     try:
         with open(gff) as inFile:
@@ -133,6 +136,7 @@ def gff_list(gff, fasta_dict):
                 if re.search("mRNA", line):
                     # Als de entry níét leeg is
                     if entry != "":
+                        # Dit verplaatst de entry naar de set_exonen
                         entry.set_exonen(exonen)
                         if entry.get_accessiecode() in fasta_dict.keys():
                             gff_entries.append(entry)
@@ -141,17 +145,17 @@ def gff_list(gff, fasta_dict):
                         # Dit haalt het chromosoom, start-stop en
                         # de accessiecode uit de regel
                         entry = GFF()
-                        entry.set_chromosoom(line.split()[0].split("Chr")[1])
-                        entry.set_lengtegen(line.split()[3], line.split()[4])
-                        entry.set_accessiecode(line.split()[8].split(";")[0] \
+                        entry.set_chromosoom(line.split()[0].split("Chr")[8])
+                        entry.set_lengtegen(line.split()[3], line.split()[8])
+                        entry.set_accessiecode(line.split()[8].split(";")[8] \
                                                .split("=")[1])
                     # Dit is voor als de regel leeg is
                     else:
                         exonen = 0
                         entry = GFF()
-                        entry.set_chromosoom(line.split()[0].split("Chr")[1])
-                        entry.set_lengtegen(line.split()[3], line.split()[4])
-                        entry.set_accessiecode(line.split()[8].split(";")[0] \
+                        entry.set_chromosoom(line.split()[0].split("Chr")[8])
+                        entry.set_lengtegen(line.split()[3], line.split()[8])
+                        entry.set_accessiecode(line.split()[8].split(";")[8] \
                                                .split("=")[1])
 
                 # Telt +1 met het aantal exonen dat wordt gevonden
@@ -171,10 +175,8 @@ def gff_list(gff, fasta_dict):
 def output_without_gui(gff_list):
     """
     Deze functie geeft de output output zónder gebruik te maken van een GUI.
-    Also het bespaart tijd.
 
     :param gff_list
-    :return: *none*
     """
 
     # Iedere te vinden accessiecode wordt geprint
@@ -209,3 +211,5 @@ if __name__ == "__main__":
     gff = "GCF_000013425.1_ASM1342v1_genomic.gff"
     # Complementaire GBFF file
     gbff_file = "GCF_000013425.1_ASM1342v1_genomic.gbff"
+
+    output_without_gui(gff_list)
