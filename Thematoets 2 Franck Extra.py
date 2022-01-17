@@ -3,13 +3,12 @@
 
 import regex as re
 import matplotlib.pyplot as plt
-import tkinter as tk
 
 
 class GFF:
     """
     Deze class definieert de functies voor het inlezen van
-    en zoeken in de GFF file.
+    en zoeken in de GFF file naar gevraagde items binnen de file.
 
     Dit zijn onder andere:
     - Het aantal exonen
@@ -139,15 +138,17 @@ def gff_list(gff, fasta_dict):
                             gff_entries.append(entry)
                             exonen = 0
 
-                        # Dit maakt een nieuwe entry aan
+                        # Dit haalt het chromosoom, start-stop en
+                        # de accessiecode uit de regel
                         entry = GFF()
                         entry.set_chromosoom(line.split()[0].split("Chr")[1])
                         entry.set_lengtegen(line.split()[3], line.split()[4])
                         entry.set_accessiecode(line.split()[8].split(";")[0] \
                                                .split("=")[1])
-
-                        # Dit haalt het chromosoom, start-stop en
-                        # de accessiecode uit de regel
+                    # Dit is voor als de regel leeg is
+                    else:
+                        exonen = 0
+                        entry = GFF()
                         entry.set_chromosoom(line.split()[0].split("Chr")[1])
                         entry.set_lengtegen(line.split()[3], line.split()[4])
                         entry.set_accessiecode(line.split()[8].split(";")[0] \
@@ -158,11 +159,45 @@ def gff_list(gff, fasta_dict):
                     exonen += 1
 
     except FileNotFoundError:  # Als het bestand niet in dezelfde map staat
-        print("De gevraagde file is niet aanwezig:", "GCF_000013425.1_ASM1342v1_genomic.gff")
+        print("De gevraagde file is niet aanwezig:",
+              "GCF_000013425.1_ASM1342v1_genomic.gff")
+        # Er wordt dan gevraagd om een nieuw bestand
         gff = input("Geef een nieuw bestand: ")
         gff_list(gff, fasta_dict)
 
         return gff_entries
+
+
+def output_without_gui(gff_list):
+    """
+    Deze functie geeft de output output zónder gebruik te maken van een GUI.
+    Also het bespaart tijd.
+
+    :param gff_list
+    :return: *none*
+    """
+
+    # print iedere accessiecode
+    for i in gff_list:
+        print(i.get_accessiecode())
+
+    # als doorgaan gelijk is aan True, blijft deze loop doorgaan
+    verderzoeken = True
+    while verderzoeken:
+        code = input("Voer één van de bovenstaande accessiecodes in: ")
+        for i in gff_list:
+            if code == i.get_accessiecode():
+                # Hiermee worden evengoed alle gevraagde
+                print("Aantal exonen: ", i.get_exonen())
+                print("Lengte gen: ", i.get_lengtegen())
+                print("Chromosoom: ", i.get_chromosoom())
+
+        vraag = input("Wilt u nog doorgaan? ")
+        if vraag == "Ja" or vraag == "ja":
+            verderzoeken = True
+        else:
+            verderzoeken = False
+
 
 
 if __name__ == "__main__":
