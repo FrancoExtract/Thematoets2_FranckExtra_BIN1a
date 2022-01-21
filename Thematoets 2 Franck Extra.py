@@ -1,9 +1,9 @@
 # Thematoets 2
 # Franck Extra
 
-import regex as re
+import re
 import matplotlib.pyplot as plt
-import tkinter as tk
+# import tkinter as tk
 
 
 class GFF:
@@ -129,47 +129,46 @@ def gff_list(gff, fasta_dict):
     gff_entries = []  # Lijst voor de mRNA-vondsten
     entry = ""  # De default entry is leeg
     # Opent en leest het bestand in
-    try:
-        with open(gff) as inFile:
-            for line in inFile:
-                # Als er "mRNA" in de regel te vinden is
-                if re.search("mRNA", line):
-                    # Als de entry níét leeg is
-                    if entry != "":
-                        # Dit verplaatst de entry naar de set_exonen
-                        entry.set_exonen(exonen)
-                        if entry.get_accessiecode() in fasta_dict.keys():
-                            gff_entries.append(entry)
-                            exonen = 0
-
-                        # Dit haalt het chromosoom, start-stop en
-                        # de accessiecode uit de regel
-                        entry = GFF()
-                        entry.set_chromosoom(line.split()[0].split("Chr")[8])
-                        entry.set_lengtegen(line.split()[3], line.split()[8])
-                        entry.set_accessiecode(line.split()[8].split(";")[8] \
-                                               .split("=")[1])
-                    # Dit is voor als de regel leeg is
-                    else:
+    with open(gff) as inFile:
+        for line in inFile:
+            # Als er "mRNA" in de regel te vinden is
+            if re.search("mRNA", line):
+                # Als de entry níét leeg is
+                if entry != "":
+                    # Dit verplaatst de entry naar de set_exonen
+                    entry.set_exonen(exonen)
+                    if entry.get_accessiecode() in fasta_dict.keys():
+                        gff_entries.append(entry)
                         exonen = 0
-                        entry = GFF()
-                        entry.set_chromosoom(line.split()[0].split("Chr")[8])
-                        entry.set_lengtegen(line.split()[3], line.split()[8])
-                        entry.set_accessiecode(line.split()[8].split(";")[8] \
+
+                    # Dit haalt het chromosoom, start-stop en
+                    # de accessiecode uit de regel
+                    entry = GFF()
+                    entry.set_chromosoom(line.split()[0].split("Chr")[8])
+                    entry.set_lengtegen(line.split()[3], line.split()[8])
+                    entry.set_accessiecode(line.split()[8].split(";")[8] \
+                                               .split("=")[1])
+                # Dit is voor als de regel leeg is
+                else:
+                    exonen = 0
+                    entry = GFF()
+                    entry.set_chromosoom(line.split()[0].split("Chr")[8])
+                    entry.set_lengtegen(line.split()[3], line.split()[8])
+                    entry.set_accessiecode(line.split()[8].split(";")[8] \
                                                .split("=")[1])
 
-                # Telt +1 met het aantal exonen dat wordt gevonden
-                elif re.search("exon", line).lower():
-                    exonen += 1
+            # Telt +1 met het aantal exonen dat wordt gevonden
+            elif re.search("exon", line).lower():
+                exonen += 1
 
-    except FileNotFoundError:  # Als het bestand niet in dezelfde map staat
-        print("De gevraagde file is niet aanwezig:",
-              "GCF_000013425.1_ASM1342v1_genomic.gff")
+    #except FileNotFoundError:  # Als het bestand niet in dezelfde map staat
+        #print("De gevraagde file is niet aanwezig:",
+        #      "GCF_000013425.1_ASM1342v1_genomic.gff")
         # Er wordt dan gevraagd om een nieuw bestand
-        gff = input("Geef een nieuw bestand: ")
-        gff_list(gff, fasta_dict)
+        #gff = input("Geef een nieuw bestand: ")
+        #gff_list(gff, fasta_dict)
 
-        return gff_entries
+        #return gff_entries
 
 
 def output_without_gui(gff_list):
@@ -204,32 +203,16 @@ def output_without_gui(gff_list):
 
 if __name__ == "__main__":
     # Serine regex
-    try:
-        regex_ser = "T-x(2)-[GC]-[NQ]-S-G-S-x-[LIVM]-[FY]"
-    except IndexError:  # Als het gevraagde niet overeenkomt met de index
-        print("Het nummer is niet te vinden in de index.")
-        input("Probeer het opnieuw:")
+    regex_ser = "T-x(2)-[GC]-[NQ]-S-G-S-x-[LIVM]-[FY]"
+
     # Histamine regex
-    try:
-        regex_his = "[ST]-G-[LIVMFYW](3)-[GN]-x(2)-T-[LIVM]-x-T-x(2)-H"
-    except IndexError:
-        print("Het nummer is niet te vinden in de index.")
-        input("Probeer het opnieuw:")
+    regex_his = "[ST]-G-[LIVMFYW](3)-[GN]-x(2)-T-[LIVM]-x-T-x(2)-H"
+
     # GFF file
-    try:
-        gff = "GCF_000013425.1_ASM1342v1_genomic.gff"
-    except FileNotFoundError:  # Als het bestand niet in dezelfde map staat
-        print("De gevraagde file is niet aanwezig:", bestandnaam)
-        print("Zet het bestand in dezelfde map en probeer het opnieuw.")
-    except IOError:  # Als het bestand niet in te lezen is
-        print("De gevraagde file is niet leesbaar:", gff)
+    gff = "GCF_000013425.1_ASM1342v1_genomic.gff"
+
     # Complementaire GBFF file
-    try:
-        gbff_file = "GCF_000013425.1_ASM1342v1_genomic.gbff"
-    except FileNotFoundError:
-        print("De gevraagde file is niet aanwezig:", bestandnaam)
-        print("Zet het bestand in dezelfde map en probeer het opnieuw.")
-    except IOError:
-        print("De gevraagde file is niet leesbaar:", gff)
+    gbff_file = "GCF_000013425.1_ASM1342v1_genomic.gbff"
+
     # Output zonder GUI
     output_without_gui(gff)
