@@ -207,6 +207,7 @@ def serine_regex(sequence, regex_ser):
     :param regex_ser: regex for serine
     :return: True/False
     """
+
     # Looks for a regex match in the sequence for serine
     match = re.search(regex_ser, sequence)
     regex_ser = "T.{2}[GC][NQ]SGS.[LIVM][FY]"
@@ -226,6 +227,7 @@ def histamine_regex(sequence, regex_his):
     :param sequence: sequence for the histamine kinase
     :param regex_his: regex for serine
     """
+
     # Looks for a regex match in the sequence for histamine
     match = re.search(regex_his, sequence)
     regex_his = "[ST]G[LIVMFYW]{3}[GN].{2}T[LIVM].T.{2}H"
@@ -238,7 +240,13 @@ def histamine_regex(sequence, regex_his):
 
 
 def graph_prepare(x, y):
-    """This function prepares a graph."""
+    """
+    This function prepares a graph.
+
+    :param x: data for the x-axis of the graph
+    :param y: data for the y-axis of the graph
+    """
+    
     plt.plot(x, y, 'g-')
     plt.title("Total counts of kinase")
     plt.xlabel("Chromosome")
@@ -263,7 +271,7 @@ class GUI:
         # Labels
         # self.label1 = tk.Label(self.main_window, text="""Click "Quit button" to terminate""")
         # self.label1.pack()
-        self.label2 = tk.Label(self.bottom_frame, text="")
+        self.label2 = tk.Label(self.bottom_frame, text="")  # Top line = blank
         self.label2.pack()
 
         """
@@ -319,7 +327,8 @@ def main():
     histamine_regex(sequence="", regex_his="[ST]G[LIVMFYW]{3}[GN].{2}T[LIVM].T.{2}H")
     
     # Prototype graph
-    graph_prepare(([1, 2, 3, 4, 5]), ([2, 4, 6, 8, 10]))
+    graph_prepare(([1, 2, 3, 4, 5]),
+                  ([2, 4, 6, 8, 10]))
     
     # GUI setup
     gui = GUI()
