@@ -34,7 +34,7 @@ class GFF:
         """This returns the determined amount of exons."""
         return self.exon_amount
 
-    def set_genelength(self, start, stop):
+    def set_gene_length(self, start, stop):
         """
         This determines the length of the gene.
         This is done by subtracting the length of the stop with the start.
@@ -45,7 +45,7 @@ class GFF:
         """
         self.gene_length = int(stop) - int(start)
 
-    def get_genelength(self):
+    def get_gene_length(self):
         """This returns the calculated length of the gene."""
         return self.gene_length
 
@@ -75,9 +75,12 @@ def read_gff(gff):
     - The length of exons
     - The length of genes
     - The identification tag of proteins
+    - The CDS region
 
     param gff: exon, gene, protein ID
     """
+
+    global gff_file  # Assignment for gff_file in line 100
 
     try:
         gff_file = open(gff, "r")  # Opens the GFF file
@@ -109,7 +112,7 @@ def read_gff(gff):
             # If there's "gene" in the third column of the line
             if line[2] == "gene":
                 g2 = GFF()  # g2 is designated for genes and protein IDs
-                g2.set_genelength(int(line[3]), int(line[4]))  # Gene length
+                g2.set_gene_length(int(line[3]), int(line[4]))  # Gene length
                 gene_length.append(g2)  # Appends to the gene length list
 
                 # This block searches for protein IDs within the GFF file
@@ -119,7 +122,7 @@ def read_gff(gff):
                 g2.set_proteinID(name)  # Adds name to the protein ID object
 
     gff_file.close()  # Closes the GFF file after reading
-    return exon_list, gene_length
+    return exon_list, gene_length, GFF
 
 
 class GenBank_entry:
@@ -143,6 +146,8 @@ def read_gbff(gbff):
 
     :param gbff: GenBank file with the requested data
     """
+
+    global id, product  # Assignment for id and product in line 180
 
     gbff_file = open(gbff, "r")  # Open the GBFF file
     if gbff_file.readable():  # Checks readability of the file
@@ -205,13 +210,14 @@ def read_gbff(gbff):
     return all_seq, seq, id, trans, gene, CDS, product
 
 
-def serine_regex(sequence, regex_ser):
+def serine_regex(sequence, regex_ser, all_seq=None):
     """
     This function uses regular expression to find serine in the sequence.
     It returns "True" if it matches; "False" if it doesn't.
 
     :param sequence: sequence for the serine kinase
     :param regex_ser: regular expression for serine
+    :param all_seq: extra parameter for the GenBank information
     :return: True/False
     """
 
@@ -228,13 +234,14 @@ def serine_regex(sequence, regex_ser):
         return False, regex_ser, sequence
 
 
-def histamine_regex(sequence, regex_his):
+def histamine_regex(sequence, regex_his, all_seq=None):
     """
     This function uses regular expression to find histamine in the sequence.
     It returns "True" if it matches; "False" if it doesn't.
 
     :param sequence: sequence for the histamine kinase
     :param regex_his: regular expression for histamine
+    :param all_seq: extra parameter for the GenBank information
     """
 
     # Looks for a regex match in the sequence for histamine
@@ -280,18 +287,8 @@ class GUI:
         self.bottom_frame.pack()
 
         # Labels
-        # self.label1 = tk.Label(self.main_window, text="""Click "Quit button" to terminate""")
-        # self.label1.pack()
-        self.label2 = tk.Label(self.bottom_frame, text="")  # Top line is blank
-        self.label2.pack()
-
-        """
-        Reminder of what to add:
-        - The amount of exons
-        - The length of the gene
-        - The protein ID associated with the gene
-        - The accompanying CDS region
-        """
+        self.label1 = tk.Label(self.bottom_frame, text="")  # Top line is blank
+        self.label1.pack()
 
         # Buttons
         self.button1 = tk.Button(self.bottom_frame,  # Button location
@@ -310,29 +307,31 @@ class GUI:
     @staticmethod
     def show_result():
         tk.messagebox.showinfo("GFF results per category",
-                               "The results will now show in the terminal :)")
+                               "The results are shown in the terminal :)")
 
-    def show_main_results(self, read_gff, read_gbff):
-        """
-        This function globally shows the results retrieved from
-        reading the GFF and GenBank file, and displays it per accession code.
 
-        :param read_gff: items pertaining to the GFF file
-        :param read_gbff: items pertaining to the GBFF file
-        """
+def show_main_results(read_gff, read_gbff):
+    """
+    This function globally shows the results retrieved from
+    reading the GFF and GenBank file, and displays it per accession code.
 
-        # print(get_genelength())  # Prints the length of the genes
-    show_main_results(read_gff, read_gbff)
+    :param read_gff: items pertaining to the GFF file
+    :param read_gbff: items pertaining to the GBFF file
+    """
+
+    print(read_gff)
+    print(read_gbff)
+    print(GFF)
 
 
 def main():
     # GFF file
     gff = "GCF_000013425.1_ASM1342v1_genomic.gff.txt"
-    # read_gff(gff)
+    read_gff(gff)
 
     # GenBank file
     gbff = "GCF_000013425.1_ASM1342v1_genomic.gbff.txt"
-    # read_gbff(gbff)
+    read_gbff(gbff)
     
     # Serine regex
     # serine_regex(sequence=x.trans, regex_ser="T.{2}[GC][NQ]SGS.[LIVM][FY]")
@@ -341,12 +340,15 @@ def main():
     # histamine_regex(sequence=x.trans, regex_his="[ST]G[LIVMFYW]{3}[GN].{2}T[LIVM].T.{2}H")
     
     # Prototype graph
-    graph_prepare(([1, 2, 3, 4, 5]), ([2, 4, 6, 8, 10]))
+    # graph_prepare(([1, 2, 3, 4, 5]), ([2, 4, 6, 8, 10]))
 
     # GUI setup
-    # gui = GUI()
+    gui = GUI()
 
-    return gff, gbff, # gui
+    # Shows the main results
+    show_main_results(read_gff, read_gbff)
+
+    return gff, gbff, gui
 
 
 main()
