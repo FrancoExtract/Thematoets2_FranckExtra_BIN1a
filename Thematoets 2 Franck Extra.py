@@ -25,18 +25,18 @@ class GFF:
 
     def __init__(self):
         """The init puts the starting position of all the functions to 0."""
-        self.exon_amount = 0
+        self.exon_length = 0
         self.gene_length = 0
         self.protein_id = 0
-        self.cds = 0
+        self.cds_length = 0
 
     def set_exon_length(self, exon):
         """This determines the amount of exons for the gene."""
-        self.exon_amount = exon
+        self.exon_length = exon
 
     def get_exon_length(self):
         """This returns the determined amount of exons."""
-        return self.exon_amount
+        return self.exon_length
 
     def set_gene_length(self, start, stop):
         """
@@ -63,11 +63,11 @@ class GFF:
 
     def set_cds_length(self, code):
         """This determines and looks for the CDS length of the given gene."""
-        self.cds = code
+        self.cds_length = code
 
     def get_cds_length(self):
         """This returns the CDS length of the given gene."""
-        return self.cds
+        return self.cds_length
 
 
 def read_gff(gff):
