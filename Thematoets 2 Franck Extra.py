@@ -16,7 +16,7 @@ class GFF:
     - The length of exons
     - The length of the gene
     - The protein ID associated with the gene
-    - The accompanying CDS region
+    - The accompanying CDS length
     """
 
     def __init__(self):
@@ -58,11 +58,11 @@ class GFF:
         return self.protein_id
 
     def set_CDS(self, code):
-        """This determines and looks for the CDS region of the given gene."""
+        """This determines and looks for the CDS length of the given gene."""
         self.cds = code
 
     def get_CDS(self):
-        """This returns the CDS region of the given gene."""
+        """This returns the CDS length of the given gene."""
         return self.cds
 
 
@@ -75,13 +75,14 @@ def read_gff(gff):
     - The length of exons
     - The length of genes
     - The identification tag of proteins
-    - The CDS region
+    - The CDS length
 
-    param gff: exon, gene, protein ID
+    :param gff: exon, gene, protein ID
+    :return: exon_list, gene_length, CDS
     """
 
-    global gff_file  # Assignment for "gff_file" in line 100
-
+    print("GFF Data:")
+    print("")
     try:
         gff_file = open(gff, "r")  # Opens the GFF file
         if gff_file.readable():    # Boolean that prints if the file is readable
@@ -95,6 +96,7 @@ def read_gff(gff):
 
     exon_list = []    # List for exons found in the file
     gene_length = []  # List for gene lengths found in the file
+    CDS = []
 
     # Reads the GFF file
     for line in gff_file:
@@ -105,9 +107,7 @@ def read_gff(gff):
             # If there's "exon" in the third column of the line
             if line[2] == "exon":  # 3rd column
                 g1 = GFF()  # g1 is designated for retrieving exons
-                g1.set_exon_length(
-                    int(line[4]) - int(line[3]))  # Adds to set_exons
-                print(g1.get_exon_length())  # Prints the exon length
+                g1.set_exon_length(int(line[4]) - int(line[3]))  # Adds to set_exons
                 exon_list.append(g1)  # Appends the exon list
 
             # If there's "gene" in the third column of the line
@@ -119,11 +119,17 @@ def read_gff(gff):
                 # This block searches for protein IDs within the GFF file
                 id_split = line[8].split(";")  # Splits the line into columns
                 name = id_split[2]  # Defines the 2nd column as the ID name
-                name.strip("Name=")  # Leaves only the ID name in the column
+                name = name.replace("Name=", "")  # Leaves only the ID name
                 g2.set_protein_ID(name)  # Adds name to the protein ID object
 
+            # If there's "CDS" in the third column of the line
+            if line[2] == "CDS":
+                g3 = GFF()  # g3 is designated for the CDS length
+                g3.set_CDS(int(line[4]) - int(line[3]))  # Adds to set_CDS
+                CDS.append(g3)  # Appends to the CDS list
+
     gff_file.close()  # Closes the GFF file after reading
-    return exon_list, gene_length, GFF
+    return exon_list, gene_length, CDS
 
 
 class GenBank_entries:
@@ -146,10 +152,11 @@ def read_gbff(gbff):
     defined in the GenBank class.
 
     :param gbff: GenBank file with the requested data
+    :return: all_seq
     """
 
-    global id, product  # Assignment for "id" and "product" in line 180
-
+    print("GBFF Data:")
+    print("")
     gbff_file = open(gbff, "r")  # Open the GBFF file
     if gbff_file.readable():  # Checks readability of the file
         print("The GBFF file is readable and good to go.")
@@ -202,16 +209,15 @@ def read_gbff(gbff):
                     line = line.strip(' ')  # Strips out any 2 spaces
                     seq.append(line)  # Appends line to the sequence list
 
-    for x in all_seq:  # "x" returns any value within all_seq
-        print(x.id)
+    # for x in all_seq:  # "x" returns any value within all_seq
+        # print(x.id)
 
     gbff_file.close()  # Closes the GBFF file after reading
 
-    # "all_seq" reads the whole GenBank file
-    return all_seq, seq, id, trans, gene, CDS, product
+    return all_seq  # "all_seq" reads the whole GenBank file
 
 
-def serine_regex(sequence, regex_ser, all_seq=None):
+def serine_regex(sequence, regex_ser):
     """
     This function uses regular expression to find serine in the sequence.
     It returns "True" if it matches; "False" if it doesn't.
@@ -222,20 +228,17 @@ def serine_regex(sequence, regex_ser, all_seq=None):
     :return: True/False
     """
 
+    # print(sequence)
+
     # Looks for a regex match in the sequence for serine
-    match = re.search(regex_ser, sequence)  # Compares regex with the sequence
-    regex_ser = "T.{2}[GC][NQ]SGS.[LIVM][FY]"  # Serine regex
-    for x in all_seq:
-        sequence = x.seq
+    match = re.search(sequence, regex_ser)  # Compares regex with the sequence
     if match:
-        print("This is a serine sequence!")
-        return True, regex_ser, sequence
+        return True
     else:
-        print("This is not a serine sequence.")
-        return False, regex_ser, sequence
+        return False
 
 
-def histamine_regex(sequence, regex_his, all_seq=None):
+def histamine_regex(sequence, regex_his):
     """
     This function uses regular expression to find histamine in the sequence.
     It returns "True" if it matches; "False" if it doesn't.
@@ -246,16 +249,11 @@ def histamine_regex(sequence, regex_his, all_seq=None):
     """
 
     # Looks for a regex match in the sequence for histamine
-    match = re.search(regex_his, sequence)  # Compares regex with the sequence
-    regex_his = "[ST]G[LIVMFYW]{3}[GN].{2}T[LIVM].T.{2}H"  # Histamine regex
-    for x in all_seq:
-        sequence = x.seq
+    match = re.search(sequence, regex_his)  # Compares regex with the sequence
     if match:
-        print("This is a histamine sequence!")
-        return True, regex_his, sequence
+        return True
     else:
-        print("This is not a histamine sequence.")
-        return False, regex_his, sequence
+        return False
 
 
 def graph_prepare(x, y):
@@ -311,37 +309,50 @@ class GUI:
                                "The results are shown in the terminal :)")
 
 
-def show_main_results(read_gff, read_gbff):
-    """
-    This function globally shows the results retrieved from
-    reading the GFF and GenBank file, and displays it per accession code.
-
-    :param read_gff: items pertaining to the GFF file
-    :param read_gbff: items pertaining to the GBFF file
-    """
-
-    print(read_gff)
-    print(read_gbff)
-    print(GFF)
-
-
 def main():
+    """
+    Here, the main functions are called and most of the variables within this
+    project declared.
+
+    :return: gff, gbff, gui
+    """
+
     # GFF file
     gff = "GCF_000013425.1_ASM1342v1_genomic.gff.txt"
-    read_gff(gff)
+    GFF = read_gff(gff)  # GFF returns everything in "read_gff"
+
+    # GFF prints
+    for list in GFF:  # List in the GFF list
+        for object in list:  # Object within the list's list
+            print("Exon length: ", object.get_exon_length(), "|",
+                  "Gene length: ", object.get_gene_length(), "|",
+                  "Protein ID: ", object.get_protein_ID(), "|",
+                  "CDS length: ", object.get_CDS())
+    print("-" * 80)
+    print("")
 
     # GenBank file
     gbff = "GCF_000013425.1_ASM1342v1_genomic.gbff.txt"
-    read_gbff(gbff)
-    
-    # Serine regex
-    x = all_seq.trans
-    # serine_regex(sequence=x, regex_ser="T.{2}[GC][NQ]SGS.[LIVM][FY]")
+    all_seq = read_gbff(gbff)
 
-    # Histamine regex
-    x = all_seq.trans
-    # histamine_regex(sequence=x, regex_his="[ST]G[LIVMFYW]{3}[GN].{2}T[LIVM].T.{2}H")
-    
+    # GenBank prints
+    for x in all_seq:
+        # Serine regex
+        ser_match = serine_regex(sequence=x.sequence,
+                                 regex_ser="T.{2}[GC][NQ]SGS.[LIVM][FY]")
+        if ser_match:
+            print(x.sequence)
+            print("This is a serine sequence!")
+
+        # Histamine regex
+        his_match = histamine_regex(sequence=x.sequence,
+                                    regex_his="[ST]G[LIVMFYW]{3}[GN].{2}T[LIVM].T.{2}H")
+        if his_match:
+            print(x.sequence)
+            print("This is a histamine sequence!")
+
+    # print(all_seq)
+
     # Prototype graph
     # graph_prepare(([1, 2, 3, 4, 5]), ([2, 4, 6, 8, 10]))
 
@@ -351,7 +362,7 @@ def main():
     # Shows the main results
     # show_main_results(read_gff, read_gbff)
 
-    return gff, gbff, x,  # gui
+    return gff, gbff,  # gui
 
 
 main()
