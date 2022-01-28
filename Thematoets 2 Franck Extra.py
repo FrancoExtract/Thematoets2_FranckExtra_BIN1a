@@ -11,10 +11,10 @@ except ModuleNotFoundError as err1:  # If a certain module is not installed
     print(err1)
 
 
-class GFF:
+class GFF3:
     """
     This class defines the functions for reading and searching in
-    the GFF file for the requested items within the file.
+    the GFF3 file for the requested items within the file.
 
     Among these are:
     - The length of exons
@@ -70,10 +70,10 @@ class GFF:
         return self.cds_length
 
 
-def read_gff(gff):
+def read_gff3(gff3):
     """
-    This function reads the GFF file and adds the values both to
-    their respective lists and objects within the GFF class.
+    This function reads the GFF3 file and adds the values both to
+    their respective lists and objects within the GFF3 class.
 
     Among these are:
     - The length of exons
@@ -81,16 +81,16 @@ def read_gff(gff):
     - The identification tag of proteins
     - The CDS length
 
-    :param gff: exon, gene, protein ID from GFF file
+    :param gff3: exon, gene, protein ID from GFF3 file
     :return: exon_length, gene_length, CDS
     """
 
-    print("GFF Data:")
+    print("GFF3 Data:")
     print("")
     try:
-        gff_file = open(gff, "r")  # Opens the GFF file
-        if gff_file.readable():  # Boolean that checks file readability
-            print("(The GFF file is readable and good to go)")
+        gff3_file = open(gff3, "r")  # Opens the GFF3 file
+        if gff3_file.readable():  # Boolean that checks file readability
+            print("(The GFF3 file is readable and good to go)")
         print("")
     except FileNotFoundError as err2:  # If the file is not in the same folder
         print(err2)
@@ -101,8 +101,8 @@ def read_gff(gff):
     gene_length = []  # List for gene lengths found in the file
     CDS_length = []  # List for the CDS lengths found in the file
 
-    # Reads the GFF file
-    for line in gff_file:
+    # Reads the GFF3 file
+    for line in gff3_file:
         line = line.split("\t")  # Makes it a list
 
         # If "NC_007795.1" in line
@@ -110,18 +110,18 @@ def read_gff(gff):
 
             # If there's "exon" in the third column of the line
             if line[2] == "exon":  # 3rd column
-                g1 = GFF()  # g1 is designated for retrieving exons
+                g1 = GFF3()  # g1 is designated for retrieving exons
                 g1.set_exon_length(
                     int(line[4]) - int(line[3]))  # Adds to set_exons
                 exon_length.append(g1)  # Appends the exon list
 
             # If there's "gene" in the third column of the line
             if line[2] == "gene":
-                g2 = GFF()  # g2 is designated for genes and protein IDs
+                g2 = GFF3()  # g2 is designated for genes and protein IDs
                 g2.set_gene_length(int(line[3]), int(line[4]))  # Gene length
                 gene_length.append(g2)  # Appends to the gene length list
 
-                # This block searches for protein IDs within the GFF file
+                # This block searches for protein IDs within the GFF3 file
                 id_split = line[8].split(";")  # Splits the line into columns
                 name = id_split[2]  # Defines the 2nd column as the ID name
                 name = name.replace("Name=", "")  # Leaves only the ID name
@@ -129,12 +129,12 @@ def read_gff(gff):
 
             # If there's "CDS" in the third column of the line
             if line[2] == "CDS":
-                g3 = GFF()  # g3 is designated for the CDS length
+                g3 = GFF3()  # g3 is designated for the CDS length
                 g3.set_cds_length(
                     int(line[4]) - int(line[3]))  # Adds to set_CDS
                 CDS_length.append(g3)  # Appends to the CDS list
 
-    gff_file.close()  # Closes the GFF file after reading
+    gff3_file.close()  # Closes the GFF3 file after reading
     return exon_length, gene_length, CDS_length
 
 
@@ -283,7 +283,7 @@ class GUI:
         # Main window
         self.main_window = tk.Tk()  # Calls the window
         self.main_window.geometry("300x100")  # Dimensions of the window
-        self.main_window.title('GFF Results')  # Title of the window
+        self.main_window.title('GFF3 Results')  # Title of the window
 
         # Top and bottom frames
         self.top_frame = tk.Frame(self.main_window)
@@ -313,7 +313,7 @@ class GUI:
 
     @staticmethod  # A function that is separate from the class it's in
     def show_result():
-        tk.messagebox.showinfo("GFF & GenBank Results",
+        tk.messagebox.showinfo("GFF3 & GenBank Results",
                                "The results will show in the terminal "
                                "after closing the popup :)")
 
@@ -323,7 +323,7 @@ def main():
     Here, the main functions are called and most of the variables within this
     project declared.
 
-    :return: gff, gbff, gui
+    :return: gff3, gbff, gui
     """
 
     # GUI setup
@@ -332,12 +332,12 @@ def main():
     # Prototype graph
     graph_prepare(([1, 2, 3, 4, 5]), ([2, 4, 6, 8, 10]))
 
-    # GFF file
-    gff = "GCF_000013425.1_ASM1342v1_genomic.gff.txt"
-    GFF_list = read_gff(gff)  # GFF returns everything in "read_gff"
+    # GFF3 file
+    gff3 = "GCF_000013425.1_ASM1342v1_genomic.gff3.txt"
+    GFF3_list = read_gff3(gff3)  # GFF3 returns everything in "read_gff3"
 
-    # GFF prints
-    for nested_list in GFF_list:  # List in the GFF list
+    # GFF3 prints
+    for nested_list in GFF3_list:  # List in the GFF3 list
         for obj in nested_list:  # Object within the list's list
             print("Exon length (base pairs): ", obj.get_exon_length(), "|",
                   "Gene length (base pairs): ", obj.get_gene_length(), "|",
@@ -375,7 +375,7 @@ def main():
     print("-" * 80)
     print("")
 
-    return gff, gbff, gui
+    return gff3, gbff, gui
 
 
 main()
