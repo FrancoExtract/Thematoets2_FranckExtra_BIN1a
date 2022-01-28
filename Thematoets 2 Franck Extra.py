@@ -81,7 +81,7 @@ def read_gff(gff):
     - The identification tag of proteins
     - The CDS length
 
-    :param gff: exon, gene, protein ID
+    :param gff: exon, gene, protein ID from GFF file
     :return: exon_list, gene_length, CDS
     """
 
@@ -89,7 +89,7 @@ def read_gff(gff):
     print("")
     try:
         gff_file = open(gff, "r")  # Opens the GFF file
-        if gff_file.readable():  # Boolean that prints if the file is readable
+        if gff_file.readable():  # Boolean that checks file readability
             print("(The GFF file is readable and good to go)")
         print("")
     except FileNotFoundError as err2:  # If the file is not in the same folder
@@ -97,14 +97,15 @@ def read_gff(gff):
         print("Make sure the file is in the same folder, and try again.")
         print("")
 
-    exon_list = []  # List for exons found in the file
+    exon_list = []  # List for exon lengths found in the file
     gene_length = []  # List for gene lengths found in the file
     CDS_length = []  # List for the CDS lengths found in the file
 
     # Reads the GFF file
     for line in gff_file:
         line = line.split("\t")  # Makes it a list
-        # If NC_007795.1 in line
+
+        # If "NC_007795.1" in line
         if line[0] == "NC_007795.1":  # [0] is the first index in the column
 
             # If there's "exon" in the third column of the line
@@ -165,7 +166,7 @@ def read_gbff(gbff):
 
     try:
         gbff_file = open(gbff, "r")  # Open the GBFF file
-        if gbff_file.readable():  # Checks readability of the file
+        if gbff_file.readable():  # Boolean that checks file readability
             print("(The GBFF file is readable and good to go)")
         print("")
     except FileNotFoundError as err3:  # If the file is not in the same folder
@@ -203,13 +204,13 @@ def read_gbff(gbff):
         if spaces == 21:  # Distance from "FEATURES" to the respective data
             if CDS is True:
                 if "/protein_id" in line:
-                    id = line.replace('/protein_id=', '')  # Replace with space
-                    id = id.replace('"', '')  # Replace 2 spaces with 1 space
-                    id = id.strip(' ')  # Removes the 2 combined spaces
+                    id = line.replace('/protein_id=', '')  # Leaves blank space
+                    id = id.replace('"', '')  # Replaces quote with blank space
+                    id = id.strip(' ')  # Strips out any leftover spaces
                 if '/product' in line:
-                    p = line.replace('/product=', '')  # Product becomes space
-                    p = p.replace('"', '')  # Replace quotation with no space
-                    p = p.strip(' ')  # Strips out any leftover space
+                    p = line.replace('/product=', '')  # Leaves blank space
+                    p = p.replace('"', '')  # Replace quote with blank space
+                    p = p.strip(' ')  # Strips out any leftover spaces
                     product = p
                 if '/translation' in line:
                     trans = True
