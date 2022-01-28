@@ -82,7 +82,7 @@ def read_gff(gff):
     - The CDS length
 
     :param gff: exon, gene, protein ID from GFF file
-    :return: exon_list, gene_length, CDS
+    :return: exon_length, gene_length, CDS
     """
 
     print("GFF Data:")
@@ -97,7 +97,7 @@ def read_gff(gff):
         print("Make sure the file is in the same folder, and try again.")
         print("")
 
-    exon_list = []  # List for exon lengths found in the file
+    exon_length = []  # List for exon lengths found in the file
     gene_length = []  # List for gene lengths found in the file
     CDS_length = []  # List for the CDS lengths found in the file
 
@@ -113,7 +113,7 @@ def read_gff(gff):
                 g1 = GFF()  # g1 is designated for retrieving exons
                 g1.set_exon_length(
                     int(line[4]) - int(line[3]))  # Adds to set_exons
-                exon_list.append(g1)  # Appends the exon list
+                exon_length.append(g1)  # Appends the exon list
 
             # If there's "gene" in the third column of the line
             if line[2] == "gene":
@@ -135,7 +135,7 @@ def read_gff(gff):
                 CDS_length.append(g3)  # Appends to the CDS list
 
     gff_file.close()  # Closes the GFF file after reading
-    return exon_list, gene_length, CDS_length
+    return exon_length, gene_length, CDS_length
 
 
 class GenBank_entries:
