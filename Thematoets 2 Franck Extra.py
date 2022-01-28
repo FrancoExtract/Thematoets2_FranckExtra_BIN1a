@@ -193,8 +193,8 @@ def read_gbff(gbff):
                 trans = False
                 seq = ''.join(seq)  # Joins any spaces together in the line
                 seq = seq.strip('/translation=')  # Removes transl. from line
-                seq = seq.strip('"')  # Strips out any space in the line
-                if "id" in locals():  # Adds ID to entry if present in line
+                seq = seq.strip('"')  # Strips out any quote in the line
+                if "id" in locals():  # Adds ID to entry if present in locals
                     all_data.append(GenBank_entries(id, product, seq))
                 seq = []
             if "CDS" in line:  # CDS = True, when it's present in the line
@@ -209,7 +209,7 @@ def read_gbff(gbff):
                     id = id.strip(' ')  # Strips out any leftover spaces
                 if '/product' in line:
                     p = line.replace('/product=', '')  # Leaves no space
-                    p = p.replace('"', '')  # Replace quote with no space
+                    p = p.replace('"', '')  # Replaces quote with no space
                     p = p.strip(' ')  # Strips out any leftover spaces
                     product = p
                 if '/translation' in line:
@@ -217,7 +217,7 @@ def read_gbff(gbff):
                 if trans and not gene:
                     line = line.strip('\n')  # Strips out any newlines
                     line = line.strip(' ')  # Strips out any leftover space
-                    seq.append(line)  # Appends line to the sequence list
+                    seq.append(line)  # Adds line to end of the sequence list
 
     gbff_file.close()  # Closes the GBFF file after reading
 
@@ -276,7 +276,8 @@ def graph_prepare(x, y):
 
 
 class GUI:
-    """This class sets up and gives output for the GUI. (Just shows results)"""
+    """This class sets up and gives output for the GUI.
+    (It just shows a message)"""
 
     def __init__(self):
         # Main window
