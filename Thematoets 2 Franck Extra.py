@@ -204,12 +204,12 @@ def read_gbff(gbff):
         if spaces == 21:  # Distance from "FEATURES" to the respective data
             if CDS is True:
                 if "/protein_id" in line:
-                    id = line.replace('/protein_id=', '')  # Leaves blank space
-                    id = id.replace('"', '')  # Replaces quote with blank space
+                    id = line.replace('/protein_id=', '')  # Leaves no space
+                    id = id.replace('"', '')  # Replaces quote with no space
                     id = id.strip(' ')  # Strips out any leftover spaces
                 if '/product' in line:
-                    p = line.replace('/product=', '')  # Leaves blank space
-                    p = p.replace('"', '')  # Replace quote with blank space
+                    p = line.replace('/product=', '')  # Leaves no space
+                    p = p.replace('"', '')  # Replace quote with no space
                     p = p.strip(' ')  # Strips out any leftover spaces
                     product = p
                 if '/translation' in line:
