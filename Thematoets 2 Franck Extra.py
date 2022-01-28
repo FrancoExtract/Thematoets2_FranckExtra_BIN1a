@@ -1,10 +1,14 @@
 # Thematoets 2
 # Franck Extra
 
-import re
-import matplotlib.pyplot as plt
-import tkinter as tk
-from tkinter import messagebox
+# Import the needed modules for this Python file
+try:
+    import re
+    import matplotlib.pyplot as plt
+    import tkinter as tk
+    from tkinter import messagebox
+except ModuleNotFoundError as err1:  # If a certain module is not installed
+    print(err1)
 
 
 class GFF:
@@ -49,19 +53,19 @@ class GFF:
         """This returns the calculated length of the gene."""
         return self.gene_length
 
-    def set_protein_ID(self, id):
+    def set_protein_id(self, id):
         """This determines the ID for the protein."""
         self.protein_id = id
 
-    def get_protein_ID(self):
+    def get_protein_id(self):
         """This returns the ID for the protein."""
         return self.protein_id
 
-    def set_CDS(self, code):
+    def set_cds_length(self, code):
         """This determines and looks for the CDS length of the given gene."""
         self.cds = code
 
-    def get_CDS(self):
+    def get_cds_length(self):
         """This returns the CDS length of the given gene."""
         return self.cds
 
@@ -86,10 +90,10 @@ def read_gff(gff):
     try:
         gff_file = open(gff, "r")  # Opens the GFF file
         if gff_file.readable():  # Boolean that prints if the file is readable
-            print("The GFF file is readable and good to go.")
+            print("(The GFF file is readable and good to go)")
         print("")
-    except FileNotFoundError as err:  # If the file is not in the same folder
-        print(err)
+    except FileNotFoundError as err2:  # If the file is not in the same folder
+        print(err2)
         print("Make sure the file is in the same folder, and try again.")
         print("")
 
@@ -120,12 +124,13 @@ def read_gff(gff):
                 id_split = line[8].split(";")  # Splits the line into columns
                 name = id_split[2]  # Defines the 2nd column as the ID name
                 name = name.replace("Name=", "")  # Leaves only the ID name
-                g2.set_protein_ID(name)  # Adds name to the protein ID object
+                g2.set_protein_id(name)  # Adds name to the protein ID object
 
             # If there's "CDS" in the third column of the line
             if line[2] == "CDS":
                 g3 = GFF()  # g3 is designated for the CDS length
-                g3.set_CDS(int(line[4]) - int(line[3]))  # Adds to set_CDS
+                g3.set_cds_length(
+                    int(line[4]) - int(line[3]))  # Adds to set_CDS
                 CDS_length.append(g3)  # Appends to the CDS list
 
     gff_file.close()  # Closes the GFF file after reading
@@ -134,7 +139,7 @@ def read_gff(gff):
 
 class GenBank_entries:
     """
-    This class defines the objects in the GBFF file for:
+    This class defines the objects (entries) in the GBFF file for:
     - Protein ID
     - Product (type of protein)
     - Protein sequence (translation)
@@ -161,10 +166,10 @@ def read_gbff(gbff):
     try:
         gbff_file = open(gbff, "r")  # Open the GBFF file
         if gbff_file.readable():  # Checks readability of the file
-            print("The GBFF file is readable and good to go.")
+            print("(The GBFF file is readable and good to go)")
         print("")
-    except FileNotFoundError as err:  # If the file is not in the same folder
-        print(err)
+    except FileNotFoundError as err3:  # If the file is not in the same folder
+        print(err3)
         print("Make sure the file is in the same folder, and try again.")
     print("")
 
@@ -228,8 +233,6 @@ def serine_regex(sequence, regex_ser):
     :return: True/False
     """
 
-    # print(sequence)
-
     # Looks for a regex match in the sequence for serine
     match = re.search(sequence, regex_ser)  # Compares regex with the sequence
     if match:
@@ -257,17 +260,18 @@ def histamine_regex(sequence, regex_his):
 
 def graph_prepare(x, y):
     """
-    This function prepares a graph. (I don't yet know what I'm using it for)
+    This function prepares a graph.
+    (I don't yet know how I will implement the use for it though)
 
     :param x: chromosome data on the x-axis
     :param y: exon data on the y-axis
     """
 
-    plt.plot(x, y, 'g-')
-    plt.title("Total counts of exons per chromosome")
-    plt.xlabel("Chromosome")
-    plt.ylabel("Exon count")
-    plt.show()
+    plt.plot(x, y, 'g-')  # Plots out the axes and makes the line green
+    plt.title("Total counts of exons per chromosome")  # Title for the graph
+    plt.xlabel("Chromosome")  # Title for the x-axis
+    plt.ylabel("Exon count")  # Title for the y-axis
+    plt.show()  # Makes the graph show up when running the program
 
 
 class GUI:
@@ -276,7 +280,7 @@ class GUI:
     def __init__(self):
         # Main window
         self.main_window = tk.Tk()  # Calls the window
-        self.main_window.geometry("250x100")  # Dimensions of the window
+        self.main_window.geometry("300x100")  # Dimensions of the window
         self.main_window.title('GFF Results')  # Title of the window
 
         # Top and bottom frames
@@ -291,9 +295,10 @@ class GUI:
 
         # Buttons
         self.button1 = tk.Button(self.bottom_frame,  # Button location
-                                 text="Click here for a list of the GFF items",
-                                 # Text shown
+                                 text="Click here to see where the results "
+                                      "will be printed",  # Text shown
                                  command=self.show_result)  # Action when button is pressed
+
         self.button1.pack()
 
         self.quit_button = tk.Button(self.bottom_frame,
@@ -322,6 +327,9 @@ def main():
     # GUI setup
     gui = GUI()
 
+    # Prototype graph
+    graph_prepare(([1, 2, 3, 4, 5]), ([2, 4, 6, 8, 10]))
+
     # GFF file
     gff = "GCF_000013425.1_ASM1342v1_genomic.gff.txt"
     GFF_list = read_gff(gff)  # GFF returns everything in "read_gff"
@@ -331,8 +339,8 @@ def main():
         for obj in nested_list:  # Object within the list's list
             print("Exon length: ", obj.get_exon_length(), "|",
                   "Gene length: ", obj.get_gene_length(), "|",
-                  "Protein ID: ", obj.get_protein_ID(), "|",
-                  "CDS length: ", obj.get_CDS())
+                  "Protein ID: ", obj.get_protein_id(), "|",
+                  "CDS length: ", obj.get_cds_length())
     print("-" * 80)
     print("")
 
@@ -348,6 +356,7 @@ def main():
         print(ser_match)
         if ser_match:
             print(x.sequence)
+    print("")
 
     # Histamine regex prints
     print("These are histamine sequences:")
@@ -358,14 +367,11 @@ def main():
         print(his_match)
         if his_match:
             print(x.sequence)
-        print("")
-    print("""For some reason, regex *does* match, but it prints both "False",
-    and "True" with empty lines; I don't know why...""")
+    print("")
+    print("""For some reason, regex *does* match, but it prints only "False",
+    and "True"; I don't know why...""")
     print("-" * 80)
     print("")
-
-    # Prototype graph
-    graph_prepare(([1, 2, 3, 4, 5]), ([2, 4, 6, 8, 10]))
 
     return gff, gbff, gui
 
