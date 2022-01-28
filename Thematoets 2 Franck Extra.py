@@ -310,7 +310,7 @@ class GUI:
         # Shows main window
         tk.mainloop()
 
-    @staticmethod
+    @staticmethod  # A function that is separate from the class it's in
     def show_result():
         tk.messagebox.showinfo("GFF & GenBank Results",
                                "The results will show in the terminal "
