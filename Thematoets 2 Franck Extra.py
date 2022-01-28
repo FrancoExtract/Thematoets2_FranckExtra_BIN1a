@@ -31,11 +31,11 @@ class GFF:
         self.cds_length = 0
 
     def set_exon_length(self, exon):
-        """This determines the amount of exons for the gene."""
+        """This determines the exon length for the gene."""
         self.exon_length = exon
 
     def get_exon_length(self):
-        """This returns the determined amount of exons."""
+        """This returns the determined exon length."""
         return self.exon_length
 
     def set_gene_length(self, start, stop):
@@ -339,10 +339,10 @@ def main():
     # GFF prints
     for nested_list in GFF_list:  # List in the GFF list
         for obj in nested_list:  # Object within the list's list
-            print("Exon length: ", obj.get_exon_length(), "|",
-                  "Gene length: ", obj.get_gene_length(), "|",
+            print("Exon length (base pairs): ", obj.get_exon_length(), "|",
+                  "Gene length (base pairs): ", obj.get_gene_length(), "|",
                   "Protein ID: ", obj.get_protein_id(), "|",
-                  "CDS length: ", obj.get_cds_length())
+                  "CDS length (nucleotides): ", obj.get_cds_length())
     print("-" * 80)
     print("")
 
